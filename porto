@@ -1,0 +1,1211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mochamad Arival - Data Portfolio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+    <script src="https://unpkg.com/scrollreveal"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script>
+        // Scroll to top on page refresh
+        window.addEventListener('beforeunload', function() {
+            window.scrollTo(0, 0);
+        });
+        
+        // Also scroll to top when page loads
+        window.addEventListener('load', function() {
+            window.scrollTo(0, 0);
+        });
+        
+        // Set PDF worker
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    </script>
+    <style>
+        /* Hacker Theme Background Animation */
+        .hacker-bg {
+            position: relative;
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(13, 148, 136, 0.15) 50%, rgba(16, 185, 129, 0.1) 100%);
+            overflow: hidden;
+        }
+
+        .hacker-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                repeating-linear-gradient(
+                    0deg,
+                    rgba(16, 185, 129, 0.08) 0px,
+                    rgba(16, 185, 129, 0.08) 1px,
+                    transparent 1px,
+                    transparent 2px
+                );
+            animation: scan 8s linear infinite;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .hacker-bg::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(ellipse at center, transparent 0%, rgba(16, 185, 129, 0.05) 100%);
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        @keyframes scan {
+            0% {
+                transform: translateY(0);
+            }
+            100% {
+                transform: translateY(10px);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        @keyframes glow {
+            0%, 100% {
+                text-shadow: 0 0 10px rgba(0, 255, 100, 0.5);
+            }
+            50% {
+                text-shadow: 0 0 20px rgba(0, 255, 100, 0.8), 0 0 30px rgba(0, 255, 100, 0.4);
+            }
+        }
+
+        .hacker-content {
+            position: relative;
+            z-index: 3;
+        }
+
+        .hacker-heading {
+            color: #10b981;
+            animation: glow 3s ease-in-out infinite;
+            font-family: 'Courier New', monospace;
+        }
+
+        .hacker-card {
+            background: rgba(255, 255, 255, 0.7);
+            border: 2px solid rgba(16, 185, 129, 0.4);
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .hacker-card:hover {
+            border-color: rgba(16, 185, 129, 0.8);
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.2), inset 0 0 20px rgba(16, 185, 129, 0.08);
+            transform: translateY(-5px);
+        }
+
+        .hacker-text {
+            color: #374151;
+        }
+
+        .hacker-accent {
+            color: #10b981;
+            font-weight: bold;
+        }
+
+        .hacker-list li {
+            color: #4b5563;
+        }
+
+        .hacker-list li::marker {
+            color: #10b981;
+        }
+
+        /* Carousel Styles */
+        .carousel-container {
+            position: relative;
+            width: 100%;
+            overflow: hidden;
+            border-radius: 0.5rem;
+        }
+
+        .carousel-wrapper {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+            position: relative;
+        }
+
+        .carousel-slide {
+            min-width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .carousel-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Carousel Drag Interaction */
+        .carousel-container.draggable {
+            cursor: grab;
+        }
+
+        .carousel-container.draggable.dragging {
+            cursor: grabbing;
+        }
+
+        .carousel-wrapper.no-transition {
+            transition: none;
+        }
+
+        .carousel-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .carousel-btn {
+            background: #10b981;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.25rem;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 500;
+        }
+
+        .carousel-btn:hover:not(:disabled) {
+            background: #059669;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+
+        .carousel-btn:disabled {
+            background: #d1d5db;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .carousel-indicators {
+            display: flex;
+            gap: 0.75rem;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            padding: 0.5rem;
+            max-height: 80px;
+            overflow-y: auto;
+        }
+
+        .carousel-dot {
+            width: 1rem;
+            height: 1rem;
+            border-radius: 50%;
+            background: #d1d5db;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            flex-shrink: 0;
+        }
+
+        .carousel-dot:hover {
+            background: #9ca3af;
+            transform: scale(1.15);
+        }
+
+        .carousel-dot.active {
+            background: #10b981;
+            border-color: #059669;
+            box-shadow: 0 0 8px rgba(16, 185, 129, 0.6);
+            transform: scale(1.2);
+        }
+
+        .carousel-counter {
+            color: #6b7280;
+            font-size: 0.875rem;
+            white-space: nowrap;
+        }
+
+        /* PDF Modal Responsive */
+        #pdfModal {
+            overflow: auto;
+        }
+
+        #pdfModal .bg-white {
+            width: 90vw;
+            height: 90vh;
+            max-width: 1000px;
+            max-height: 800px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #pdfModal .bg-white > div:nth-child(2) {
+            flex: 1;
+            overflow: auto;
+        }
+
+        #pdfViewer {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Mobile responsive */
+        @media (max-width: 640px) {
+            #pdfModal .bg-white {
+                width: 95vw;
+                height: 95vh;
+                max-width: 100%;
+                max-height: 100%;
+                p-4;
+            }
+
+            #pdfModal .bg-white button:first-child {
+                width: 2rem;
+                height: 2rem;
+                padding: 0;
+            }
+
+            #pdfModal h3 {
+                font-size: 1.25rem;
+            }
+
+            #pdfModal .flex.justify-center.gap-4 {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            #pdfModal .flex.justify-center.gap-4 button,
+            #pdfModal .flex.justify-center.gap-4 a {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-green-50 to-teal-50 font-sans">
+    <!-- Navigation Component -->
+    <custom-navbar></custom-navbar>
+
+    <!-- Hero Section -->
+    <section class="min-h-screen flex items-center justify-center px-4 md:px-8 lg:px-16 relative overflow-hidden">
+        <div class="absolute inset-0 bg-[url('http://static.photos/nature/1200x630/42')] bg-cover bg-center opacity-20"></div>
+        <div class="relative z-10 text-center max-w-4xl animate__animated animate__fadeIn">
+            <h1 class="text-4xl md:text-6xl font-bold text-green-800 mb-4">Mochamad Arival Khoiruddin Hidayat</h1>
+            <p class="text-xl md:text-2xl text-green-700 mb-8">Data Analyst | Machine Learning Enthusiast</p>
+            <div class="flex justify-center space-x-4">
+                <a href="#about" class="px-6 py-3 bg-green-600 text-white rounded-full hover:bg-green-700 transition duration-300 shadow-lg hover:shadow-xl">Explore My Journey</a>
+                <a href="#contact" class="px-6 py-3 border-2 border-green-600 text-green-600 rounded-full hover:bg-green-50 transition duration-300">Get In Touch</a>
+            </div>
+        </div>
+        <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce">
+            <i data-feather="chevron-down" class="text-green-600 w-8 h-8"></i>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-20 px-4 md:px-8 lg:px-16 bg-white bg-opacity-80 backdrop-blur-sm">
+        <div class="max-w-6xl mx-auto">
+            <h2 class="text-3xl md:text-4xl font-bold text-green-800 mb-12 text-center">About Me</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                <div class="space-y-6">
+                    <p class="text-lg text-gray-700 leading-relaxed">
+                        I am a fresh graduate from Universitas Komputer Indonesia (UNIKOM) with a strong interest in technology and data-driven problem solving. During my academic journey, I gained hands-on experience through coursework, projects, and practical assignments that strengthened my analytical thinking, attention to detail, and ability to work collaboratively in a team environment.
+                    </p>
+                    <p class="text-lg text-gray-700 leading-relaxed">
+                        I am highly motivated, eager to learn new technologies, and adaptable to fast-paced work environments. I enjoy turning complex problems into structured and efficient solutions, and I am committed to continuous self-improvement both technically and professionally. I am currently seeking an opportunity where I can contribute my skills, grow my expertise, and add value to the organization.
+                    </p>
+                    <div class="flex flex-wrap gap-3">
+                        <span class="px-4 py-2 bg-green-100 text-green-800 rounded-full">Python</span>
+                        <span class="px-4 py-2 bg-green-100 text-green-800 rounded-full">Machine Learning</span>
+                        <span class="px-4 py-2 bg-green-100 text-green-800 rounded-full">SQL</span>
+                        <span class="px-4 py-2 bg-green-100 text-green-800 rounded-full">Data Visualization</span>
+                        <span class="px-4 py-2 bg-green-100 text-green-800 rounded-full">Power BI</span>
+                        <span class="px-4 py-2 bg-green-100 text-green-800 rounded-full">Tableau</span>
+                        <span class="px-4 py-2 bg-green-100 text-green-800 rounded-full">Microsoft Excell</span>
+                    </div>
+                </div>
+                <div class="relative rounded-xl overflow-hidden shadow-xl transform hover:scale-105 transition duration-500 bg-gray-100 flex items-center justify-center" style="aspect-ratio: auto;">
+                    <img src="1678995854973.jpeg" alt="Workspace" class="w-full h-auto object-contain">
+                    <div class="absolute inset-0 bg-green-800 bg-opacity-20"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Experience Section -->
+<section id="experience" class="py-20 px-4 md:px-8 lg:px-16 hacker-bg">
+        <div class="max-w-6xl mx-auto hacker-content">
+            <h2 class="text-3xl md:text-4xl font-bold hacker-heading mb-12 text-center">Work Experience</h2>
+            
+            <div class="space-y-12">
+                <!-- Experience 1 -->
+                <div class="experience-card hacker-card p-8 rounded-xl">
+                    <div class="flex flex-col md:flex-row md:justify-between md:items-center mb-4">
+                        <h3 class="text-2xl font-bold hacker-accent">Data Analyst</h3>
+                        <span class="hacker-accent">Aug 2022 - Dec 2022</span>
+                    </div>
+                    <h4 class="text-xl hacker-text mb-2">PT Dwi Inti Putra MyEduSolve</h4>
+                    <ul class="hacker-list space-y-2">
+                        <li>- Led a group of 4 interns to finish a Capstone Project as Data Analyst</li>
+                        <li>- Created and developed data visualizations ranging from simple to complex (Python, Seaborn/matplotlib)</li>
+                        <li>- Helped the team clean, prepare data and understand business requirements</li>
+                        <li>- Created deck and final visualization for presentation to company (PowerBI)</li>
+                    </ul>
+                </div>
+
+                <!-- Experience 2 -->
+                <div class="experience-card hacker-card p-8 rounded-xl">
+                    <div class="flex flex-col md:flex-row md:justify-between md:items-center mb-4">
+                        <h3 class="text-2xl font-bold hacker-accent">Data Science Intern</h3>
+                        <span class="hacker-accent">Jun 2022 - Jul 2022</span>
+                    </div>
+                    <h4 class="text-xl hacker-text mb-2">ID/X Partners</h4>
+                    <ul class="hacker-list space-y-2">
+                        <li>- Completed various tasks related to Data Scientist activities including Data Analysis</li>
+                        <li>- Implemented Machine Learning models</li>
+                        <li>- Developed Business Understanding for data projects</li>
+                    </ul>
+                </div>
+
+                <!-- Experience 3 -->
+                <div class="experience-card hacker-card p-8 rounded-xl">
+                    <div class="flex flex-col md:flex-row md:justify-between md:items-center mb-4">
+                        <h3 class="text-2xl font-bold hacker-accent">Agent</h3>
+                        <span class="hacker-accent">Jan 2022 - Mar 2022</span>
+                    </div>
+                    <h4 class="text-xl hacker-text mb-2">PT. Lima Cakar Bumi</h4>
+                    <ul class="hacker-list space-y-2">
+                        <li>- Clarified human gestures while shopping for AI training</li>
+                        <li>Created datasets for Artificial Intelligence applications</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects" class="py-20 px-4 md:px-8 lg:px-16 bg-white">
+        <div class="max-w-6xl mx-auto">
+            <h2 class="text-3xl md:text-4xl font-bold text-green-800 mb-12 text-center">Projects</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Project 1 -->
+                <div class="project-card bg-green-50 rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition duration-500 transform hover:-translate-y-2 cursor-pointer" onclick="showPDFProjectModal('Personality Clustering Based on Big 5 Personality', 'Analyzed data about personality traits of participants in an independent study program using exploratory data analysis methods.', 'Personality Clustering  by Group 11.pdf', ['Python', 'Machine Learning', 'Data Visualization'])">
+                    <div class="h-48 overflow-hidden">
+                        <img src="dashboard.jpg" alt="Project 1" class="w-full h-full object-cover">
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-green-800 mb-2">Personality Clustering Based on Big 5 Personality</h3>
+                        <p class="text-gray-600 mb-4">Analyzed data about personality traits of participants in an independent study program using exploratory data analysis methods.</p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="px-3 py-1 bg-green-200 text-green-800 text-sm rounded-full">Python</span>
+                            <span class="px-3 py-1 bg-green-200 text-green-800 text-sm rounded-full">Exploratory Data Analysis</span>
+                            <span class="px-3 py-1 bg-green-200 text-green-800 text-sm rounded-full">Data Visualization</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 2 -->
+                <div class="project-card bg-green-50 rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition duration-500 transform hover:-translate-y-2 cursor-pointer" onclick="showPDFProjectModal('Coffee Bean Ripeness Classification', 'Bachelor\'s Thesis: Evaluated DenseNet121 architecture for classifying coffee bean ripeness levels with hyperparameter tuning.', 'SLIDE KOPI.pdf', ['CNN', 'DenseNet121', 'Hyperparameter Tuning'])">
+                    <div class="h-48 overflow-hidden">
+                        <img src="KOPI.jpg" alt="Project 2" class="w-full h-full object-cover">
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-green-800 mb-2">Coffee Bean Ripeness Classification</h3>
+                        <p class="text-gray-600 mb-4">Bachelor's Thesis: Evaluated DenseNet121 architecture for classifying coffee bean ripeness levels with hyperparameter tuning.</p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="px-3 py-1 bg-green-200 text-green-800 text-sm rounded-full">CNN</span>
+                            <span class="px-3 py-1 bg-green-200 text-green-800 text-sm rounded-full">DenseNet121</span>
+                            <span class="px-3 py-1 bg-green-200 text-green-800 text-sm rounded-full">Hyperparameter Tuning</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 3 -->
+                <div class="project-card bg-green-50 rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition duration-500 transform hover:-translate-y-2 cursor-pointer" onclick="showPDFProjectModal('US Flight Data Visualization', 'Dashboard analytics project using Tableau for visualizing US flight data, patterns, and trends across different routes and airports.', 'DASHBOARD.twb', ['Tableau', 'Data Analytics', 'Business Intelligence'])">
+                    <div class="h-48 overflow-hidden">
+                        <img src="US FLIGHT.jpg" alt="Project 3" class="w-full h-full object-cover">
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-green-800 mb-2">US Flight Data Visualization</h3>
+                        <p class="text-gray-600 mb-4">Dashboard analytics project using Tableau for visualizing US flight data, patterns, and trends across different routes and airports.</p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="px-3 py-1 bg-green-200 text-green-800 text-sm rounded-full">Tableau</span>
+                            <span class="px-3 py-1 bg-green-200 text-green-800 text-sm rounded-full">Data Analytics</span>
+                            <span class="px-3 py-1 bg-green-200 text-green-800 text-sm rounded-full">Business Intelligence</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Education Section -->
+    <section id="education" class="py-20 px-4 md:px-8 lg:px-16 bg-green-50">
+<div class="max-w-6xl mx-auto">
+            <h2 class="text-3xl md:text-4xl font-bold text-green-800 mb-12 text-center">Education</h2>
+            
+            <div class="bg-white p-8 rounded-xl shadow-md max-w-3xl mx-auto">
+                <div class="flex items-start">
+                    <div class="bg-green-100 p-4 rounded-full mr-6">
+                        <i data-feather="book" class="text-green-600 w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-bold text-green-700">Universitas Komputer Indonesia</h3>
+                        <p class="text-gray-600 mb-2">Bachelor's in Informatics Engineering | GPA: 3.34/4.00</p>
+                        <p class="text-gray-500">Sep 2021 - Oct 2025 </p>
+                        <div class="mt-4">
+                            <h4 class="font-semibold text-green-700 mb-2">Relevant Coursework:</h4>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="px-3 py-1 bg-green-100 text-green-800 text-sm rounded-full">Machine Learning</span>
+                                <span class="px-3 py-1 bg-green-100 text-green-800 text-sm rounded-full">Data Visualization</span>
+                                <span class="px-3 py-1 bg-green-100 text-green-800 text-sm rounded-full">Natural Language Processing</span>
+                                <span class="px-3 py-1 bg-green-100 text-green-800 text-sm rounded-full">Business Intelligence</span>
+                                <span class="px-3 py-1 bg-green-100 text-green-800 text-sm rounded-full">Database Systems</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Certificates Section -->
+    <section id="certificates" class="py-20 px-4 md:px-8 lg:px-16 bg-white">
+        <div class="max-w-6xl mx-auto">
+            <h2 class="text-3xl md:text-4xl font-bold text-green-800 mb-12 text-center">Certificates</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Certificate 1 -->
+                <div class="certificate-card bg-green-50 rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition duration-500 transform hover:-translate-y-2 cursor-pointer" onclick="showPDFModal('Data Science Bootcamp', 'ID/X Partners - 2022', 'vix-completion-certificate-44667IAPMGII372022.pdf')">
+<div class="h-48 overflow-hidden bg-gray-200 flex items-center justify-center">
+                        <canvas id="pdfCanvas1" class="w-full h-full"></canvas>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-green-800 mb-2">Data Science Bootcamp</h3>
+                        <p class="text-gray-600 mb-4">ID/X Partners - 2022</p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="px-3 py-1 bg-green-200 text-green-800 text-sm rounded-full">Data Analysis</span>
+                            <span class="px-3 py-1 bg-green-200 text-green-800 text-sm rounded-full">Machine Learning</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- Certificate 2 -->
+                <div class="certificate-card bg-green-50 rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition duration-500 transform hover:-translate-y-2 cursor-pointer" onclick="showPDFModal('Databases', 'Professional Certification - 2023', 'Databases.pdf')">
+<div class="h-48 overflow-hidden bg-gray-200 flex items-center justify-center">
+                        <canvas id="pdfCanvas2" class="w-full h-full"></canvas>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-green-800 mb-2">Databases</h3>
+                        <p class="text-gray-600 mb-4">Professional Certification - 2023</p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="px-3 py-1 bg-green-200 text-green-800 text-sm rounded-full">SQL</span>
+                            <span class="px-3 py-1 bg-green-200 text-green-800 text-sm rounded-full">Database Design</span>
+                            <span class="px-3 py-1 bg-green-200 text-green-800 text-sm rounded-full">Data Management</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- Certificate 3 -->
+                <div class="certificate-card bg-green-50 rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition duration-500 transform hover:-translate-y-2 cursor-pointer" onclick="showPDFModal('Excel Expert', 'Advanced Spreadsheet Skills - 2023', 'Excel 2019 Expert.pdf')">
+<div class="h-48 overflow-hidden bg-gray-200 flex items-center justify-center">
+                        <canvas id="pdfCanvas3" class="w-full h-full"></canvas>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-green-800 mb-2">Excel Expert</h3>
+                        <p class="text-gray-600 mb-4">Advanced Spreadsheet Skills - 2023</p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="px-3 py-1 bg-green-200 text-green-800 text-sm rounded-full">Excel</span>
+                            <span class="px-3 py-1 bg-green-200 text-green-800 text-sm rounded-full">Data Analysis</span>
+                            <span class="px-3 py-1 bg-green-200 text-green-800 text-sm rounded-full">Visualization</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- Certificate 4 -->
+                <div class="certificate-card bg-green-50 rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition duration-500 transform hover:-translate-y-2 cursor-pointer" onclick="showPDFModal('Data Analytics', 'Google Analytics Certification - 2023', 'Data Analytics.pdf')">
+<div class="h-48 overflow-hidden bg-gray-200 flex items-center justify-center">
+                        <canvas id="pdfCanvas4" class="w-full h-full"></canvas>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-green-800 mb-2">Data Analytics</h3>
+                        <p class="text-gray-600 mb-4">Google Analytics Certification - 2023</p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="px-3 py-1 bg-green-200 text-green-800 text-sm rounded-full">Analytics</span>
+                            <span class="px-3 py-1 bg-green-200 text-green-800 text-sm rounded-full">Reporting</span>
+                            <span class="px-3 py-1 bg-green-200 text-green-800 text-sm rounded-full">Insights</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <skills-section></skills-section>
+
+    <!-- Contact Section -->
+<section id="contact" class="py-20 px-4 md:px-8 lg:px-16 bg-white">
+        <div class="max-w-6xl mx-auto">
+            <h2 class="text-3xl md:text-4xl font-bold text-green-800 mb-12 text-center">Get In Touch</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                <div class="space-y-6">
+                    <h3 class="text-2xl font-semibold text-green-700">Contact Information</h3>
+                    <div class="flex items-start space-x-4">
+                        <i data-feather="mail" class="text-green-600 mt-1"></i>
+                        <div>
+                            <p class="font-medium text-gray-700">Email</p>
+                            <a href="mailto:mochamadarival@gmail.com" class="text-gray-600 hover:text-green-600 transition">mochamadarival@gmail.com</a>
+                        </div>
+                    </div>
+                    <div class="flex items-start space-x-4">
+                        <i data-feather="phone" class="text-green-600 mt-1"></i>
+                        <div>
+                            <p class="font-medium text-gray-700">Phone</p>
+                            <a href="tel:+6287821834963" class="text-gray-600 hover:text-green-600 transition">+62 878-2183-4963</a>
+                        </div>
+                    </div>
+    
+                    <div class="flex items-start space-x-4">
+                        <i data-feather="linkedin" class="text-green-600 mt-1"></i>
+                        <div>
+                            <p class="font-medium text-gray-700">LinkedIn</p>
+                            <a href="https://www.linkedin.com/in/mocharival" target="_blank" class="text-gray-600 hover:text-green-600 transition">linkedin.com/in/mocharival</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div>
+                    <form class="space-y-6">
+                        <div>
+                            <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                            <input type="text" id="name" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                        </div>
+                        <div>
+                            <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                            <input type="email" id="email" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                        </div>
+                        <div>
+                            <label for="message" class="block text-sm font-medium text-gray-700 mb-1">Message</label>
+                            <textarea id="message" rows="4" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"></textarea>
+                        </div>
+                        <button type="submit" class="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition duration-300 w-full shadow-md hover:shadow-lg">Send Message</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer Component -->
+    <custom-footer></custom-footer>
+    <!-- Certificate Modal -->
+    <div id="certificateModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-xl p-6 max-w-2xl w-full mx-4 relative">
+            <button onclick="closeCertificateModal()" class="absolute top-4 right-4 text-gray-500 hover:text-gray-700">
+                <i data-feather="x"></i>
+            </button>
+            <div class="mb-4">
+                <h3 id="modalTitle" class="text-2xl font-bold text-green-800"></h3>
+                <p id="modalSubtitle" class="text-gray-600"></p>
+            </div>
+            <div class="h-64 md:h-96 overflow-hidden rounded-lg mb-4">
+                <img id="modalImage" src="" alt="Certificate" class="w-full h-full object-contain">
+            </div>
+            <div class="flex justify-center">
+                <button onclick="closeCertificateModal()" class="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- PDF Modal -->
+    <div id="pdfModal" class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 hidden p-4">
+        <div class="bg-white rounded-lg relative flex flex-col w-full max-w-5xl max-h-[90vh] shadow-2xl">
+            <button onclick="closePDFModal()" class="absolute top-3 right-3 text-gray-500 hover:text-gray-700 z-10 p-1 hover:bg-gray-100 rounded-full transition">
+                <i data-feather="x" class="w-5 h-5"></i>
+            </button>
+            
+            <!-- PDF Viewer Container - Full Height -->
+            <div class="flex-1 overflow-hidden bg-white">
+                <iframe id="pdfViewer" src="" class="w-full h-full" frameborder="0" style="border: none;"></iframe>
+            </div>
+            
+            <!-- Footer - Compact -->
+            <div class="p-3 sm:p-4 border-t border-gray-200 bg-gray-100 flex justify-center gap-2 sm:gap-3 flex-shrink-0">
+                <a id="pdfDownloadBtn" href="" target="_blank" download class="px-4 sm:px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-medium text-sm sm:text-base flex items-center gap-1.5">
+                    <i data-feather="download" class="w-4 h-4"></i>
+                    <span class="hidden sm:inline">Download PDF</span>
+                    <span class="sm:hidden">Download</span>
+                </a>
+                <button onclick="closePDFModal()" class="px-4 sm:px-6 py-2 bg-gray-300 text-gray-800 rounded-lg hover:bg-gray-400 transition font-medium text-sm sm:text-base">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Project Modal -->
+    <div id="projectModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-xl p-6 max-w-3xl w-full mx-4 relative max-h-screen overflow-y-auto">
+            <button onclick="closeProjectModal()" class="absolute top-4 right-4 text-gray-500 hover:text-gray-700 z-10">
+                <i data-feather="x"></i>
+            </button>
+            <div class="mb-6">
+                <h3 id="projectModalTitle" class="text-3xl font-bold text-green-800 mb-4"></h3>
+                
+                <!-- Carousel Container -->
+                <div class="carousel-container h-64 md:h-96 mb-4 relative draggable" id="carouselContainer">
+                    <div class="carousel-wrapper" id="carouselWrapper">
+                        <!-- Images will be dynamically added here -->
+                    </div>
+                </div>
+                
+                <!-- Carousel Controls -->
+                <div id="carouselControls" class="carousel-controls hidden">
+                    <button class="carousel-btn" id="prevBtn" onclick="previousSlide()" title="Previous">
+                        <i data-feather="chevron-left"></i>
+                    </button>
+                    <div class="carousel-indicators" id="carouselIndicators"></div>
+                    <button class="carousel-btn" id="nextBtn" onclick="nextSlide()" title="Next">
+                        <i data-feather="chevron-right"></i>
+                    </button>
+                </div>
+                
+                <div class="carousel-counter text-center mt-2" id="carouselCounter"></div>
+                
+                <p id="projectModalDescription" class="text-gray-700 text-lg leading-relaxed mb-6 mt-6"></p>
+                <div id="projectModalTags" class="flex flex-wrap gap-2 mb-6"></div>
+            </div>
+            <div class="flex justify-center">
+                <button onclick="closeProjectModal()" class="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showCertificateModal(title, subtitle, imageUrl) {
+            document.getElementById('modalTitle').textContent = title;
+            document.getElementById('modalSubtitle').textContent = subtitle;
+            document.getElementById('modalImage').src = imageUrl;
+            document.getElementById('certificateModal').classList.remove('hidden');
+            feather.replace();
+        }
+
+        function closeCertificateModal() {
+            document.getElementById('certificateModal').classList.add('hidden');
+        }
+
+        function showPDFModal(title, subtitle, pdfUrl) {
+            document.getElementById('pdfViewer').src = pdfUrl;
+            document.getElementById('pdfDownloadBtn').href = pdfUrl;
+            document.getElementById('pdfModal').classList.remove('hidden');
+            feather.replace();
+        }
+
+        function closePDFModal() {
+            document.getElementById('pdfModal').classList.add('hidden');
+            document.getElementById('pdfViewer').src = '';
+        }
+
+        function showProjectModal(title, description, images, tags) {
+            // Store current slide index
+            window.currentSlide = 0;
+            window.projectImages = Array.isArray(images) ? images : [images];
+            
+            document.getElementById('projectModalTitle').textContent = title;
+            document.getElementById('projectModalDescription').textContent = description;
+            
+            // Build carousel
+            const carouselWrapper = document.getElementById('carouselWrapper');
+            carouselWrapper.innerHTML = window.projectImages.map((img, index) => 
+                `<div class="carousel-slide h-64 md:h-96"><img src="${img}" alt="Project image ${index + 1}" class="w-full h-full object-cover"></div>`
+            ).join('');
+            
+            // Reset carousel position
+            carouselWrapper.style.transform = 'translateX(0)';
+            
+            // Build indicators
+            const indicatorsContainer = document.getElementById('carouselIndicators');
+            indicatorsContainer.innerHTML = window.projectImages.map((_, index) => 
+                `<div class="carousel-dot ${index === 0 ? 'active' : ''}" onclick="goToSlide(${index})"></div>`
+            ).join('');
+            
+            // Update counter
+            document.getElementById('carouselCounter').textContent = `${window.currentSlide + 1} / ${window.projectImages.length}`;
+            
+            // Show/hide controls based on number of images
+            const controls = document.getElementById('carouselControls');
+            if (window.projectImages.length > 1) {
+                controls.classList.remove('hidden');
+                updateCarouselButtons();
+            } else {
+                controls.classList.add('hidden');
+            }
+            
+            // Generate tags HTML
+            const tagsContainer = document.getElementById('projectModalTags');
+            tagsContainer.innerHTML = tags.map(tag => 
+                `<span class="px-3 py-1 bg-green-200 text-green-800 text-sm rounded-full">${tag}</span>`
+            ).join('');
+            
+            document.getElementById('projectModal').classList.remove('hidden');
+            feather.replace();
+        }
+
+        function updateCarouselSlide() {
+            const wrapper = document.getElementById('carouselWrapper');
+            wrapper.style.transform = `translateX(-${window.currentSlide * 100}%)`;
+            
+            // Update indicators
+            document.querySelectorAll('.carousel-dot').forEach((dot, index) => {
+                dot.classList.toggle('active', index === window.currentSlide);
+            });
+            
+            // Update counter
+            document.getElementById('carouselCounter').textContent = `${window.currentSlide + 1} / ${window.projectImages.length}`;
+            
+            // Render PDF page if PDF is loaded
+            if (window.projectPDFDoc) {
+                const canvasId = `pdfPage${window.currentSlide + 1}`;
+                const canvas = document.getElementById(canvasId);
+                if (canvas && canvas.width === 0) {
+                    renderPDFPage(window.projectPDFDoc, window.currentSlide + 1, canvasId);
+                }
+            }
+            
+            updateCarouselButtons();
+        }
+
+        function updateCarouselButtons() {
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const prevBtnOverlay = document.getElementById('prevBtnOverlay');
+            const nextBtnOverlay = document.getElementById('nextBtnOverlay');
+            
+            const isDisabledPrev = window.currentSlide === 0;
+            const isDisabledNext = window.currentSlide === window.projectImages.length - 1;
+            
+            if (prevBtn) prevBtn.disabled = isDisabledPrev;
+            if (nextBtn) nextBtn.disabled = isDisabledNext;
+            if (prevBtnOverlay) prevBtnOverlay.disabled = isDisabledPrev;
+            if (nextBtnOverlay) nextBtnOverlay.disabled = isDisabledNext;
+        }
+
+        function nextSlide() {
+            if (window.currentSlide < window.projectImages.length - 1) {
+                window.currentSlide++;
+                updateCarouselSlide();
+            }
+        }
+
+        function previousSlide() {
+            if (window.currentSlide > 0) {
+                window.currentSlide--;
+                updateCarouselSlide();
+            }
+        }
+
+        function goToSlide(index) {
+            window.currentSlide = index;
+            updateCarouselSlide();
+        }
+
+        function closeProjectModal() {
+            document.getElementById('projectModal').classList.add('hidden');
+        }
+
+        async function showPDFProjectModal(title, description, filePath, tags) {
+            try {
+                // Check if file is PDF or other format
+                const isPDF = filePath.toLowerCase().endsWith('.pdf');
+                const isTableau = filePath.toLowerCase().endsWith('.twb') || filePath.toLowerCase().endsWith('.twbx');
+                
+                document.getElementById('projectModalTitle').textContent = title;
+                document.getElementById('projectModalDescription').textContent = description;
+                
+                const carouselWrapper = document.getElementById('carouselWrapper');
+                const indicatorsContainer = document.getElementById('carouselIndicators');
+                const controls = document.getElementById('carouselControls');
+                
+                // Generate tags
+                const tagsContainer = document.getElementById('projectModalTags');
+                tagsContainer.innerHTML = tags.map(tag => 
+                    `<span class="px-3 py-1 bg-green-200 text-green-800 text-sm rounded-full">${tag}</span>`
+                ).join('');
+                
+                if (isPDF) {
+                    // Handle PDF files
+                    const pdf = await pdfjsLib.getDocument(filePath).promise;
+                    const numPages = pdf.numPages;
+                    
+                    window.projectPDFDoc = pdf;
+                    window.projectCurrentPage = 1;
+                    window.projectPDFPath = filePath;
+                    
+                    carouselWrapper.innerHTML = Array.from({length: numPages}, (_, i) => 
+                        `<div class="carousel-slide h-64 md:h-96 bg-gray-100 flex items-center justify-center"><canvas id="pdfPage${i + 1}" class="max-w-full max-h-full"></canvas></div>`
+                    ).join('');
+                    
+                    window.currentSlide = 0;
+                    window.projectImages = Array.from({length: numPages});
+                    carouselWrapper.style.transform = 'translateX(0)';
+                    
+                    indicatorsContainer.innerHTML = Array.from({length: numPages}, (_, index) => 
+                        `<div class="carousel-dot ${index === 0 ? 'active' : ''}" onclick="goToSlide(${index})"></div>`
+                    ).join('');
+                    
+                    if (numPages > 1) {
+                        controls.classList.remove('hidden');
+                    } else {
+                        controls.classList.add('hidden');
+                    }
+                    
+                    document.getElementById('carouselCounter').textContent = `${window.currentSlide + 1} / ${numPages}`;
+                    
+                    await renderPDFPage(pdf, 1, 'pdfPage1');
+                    
+                    for (let i = 2; i <= numPages; i++) {
+                        setTimeout(() => renderPDFPage(pdf, i, `pdfPage${i}`), i * 100);
+                    }
+                } else if (isTableau) {
+                    // Handle Tableau files with fallback message
+                    carouselWrapper.innerHTML = `
+                        <div class="carousel-slide h-64 md:h-96 bg-gradient-to-br from-blue-50 to-green-50 flex flex-col items-center justify-center p-6 text-center">
+                            <svg class="w-16 h-16 text-blue-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            <h4 class="text-lg font-bold text-gray-800 mb-2">Tableau Dashboard File</h4>
+                            <p class="text-gray-600 text-sm mb-4">${filePath}</p>
+                            <a href="${filePath}" download class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition inline-block">
+                                <i data-feather="download" class="w-4 h-4 inline mr-2"></i>Download File
+                            </a>
+                            <p class="text-xs text-gray-500 mt-4">This is a Tableau file. Open it with Tableau Desktop or Tableau Public to view the interactive dashboard.</p>
+                        </div>
+                    `;
+                    
+                    window.currentSlide = 0;
+                    window.projectImages = [filePath];
+                    carouselWrapper.style.transform = 'translateX(0)';
+                    
+                    indicatorsContainer.innerHTML = '';
+                    controls.classList.add('hidden');
+                    document.getElementById('carouselCounter').textContent = '1 / 1';
+                } else {
+                    // Handle other file types
+                    carouselWrapper.innerHTML = `
+                        <div class="carousel-slide h-64 md:h-96 bg-gray-100 flex flex-col items-center justify-center p-6 text-center">
+                            <svg class="w-16 h-16 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4v2m0 4v2M12 5a7 7 0 110 14 7 7 0 010-14zm0 1a6 6 0 100 12 6 6 0 000-12z"></path>
+                            </svg>
+                            <h4 class="text-lg font-bold text-gray-700 mb-2">File Format</h4>
+                            <p class="text-gray-600 text-sm mb-4">${filePath}</p>
+                            <a href="${filePath}" download class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition inline-block">
+                                <i data-feather="download" class="w-4 h-4 inline mr-2"></i>Download
+                            </a>
+                        </div>
+                    `;
+                    
+                    window.currentSlide = 0;
+                    window.projectImages = [filePath];
+                    carouselWrapper.style.transform = 'translateX(0)';
+                    
+                    indicatorsContainer.innerHTML = '';
+                    controls.classList.add('hidden');
+                    document.getElementById('carouselCounter').textContent = '1 / 1';
+                }
+                
+                document.getElementById('projectModal').classList.remove('hidden');
+                feather.replace();
+                
+            } catch (error) {
+                console.error('Error loading file:', error);
+                // Show error message in modal
+                document.getElementById('projectModalTitle').textContent = title;
+                document.getElementById('projectModalDescription').textContent = description;
+                
+                const carouselWrapper = document.getElementById('carouselWrapper');
+                carouselWrapper.innerHTML = `
+                    <div class="carousel-slide h-64 md:h-96 bg-red-50 flex flex-col items-center justify-center p-6 text-center">
+                        <svg class="w-16 h-16 text-red-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4v.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <h4 class="text-lg font-bold text-red-700 mb-2">Error Loading File</h4>
+                        <p class="text-red-600 text-sm">Unable to load the requested file. Please try again or contact support.</p>
+                    </div>
+                `;
+                
+                document.getElementById('carouselIndicators').innerHTML = '';
+                document.getElementById('carouselControls').classList.add('hidden');
+                document.getElementById('carouselCounter').textContent = '1 / 1';
+                
+                document.getElementById('projectModal').classList.remove('hidden');
+                feather.replace();
+            }
+        }
+
+        async function renderPDFPage(pdf, pageNum, canvasId) {
+            try {
+                const canvas = document.getElementById(canvasId);
+                if (!canvas) return;
+                
+                const page = await pdf.getPage(pageNum);
+                const scale = 2;
+                const viewport = page.getViewport({ scale });
+                
+                canvas.width = viewport.width;
+                canvas.height = viewport.height;
+                
+                const context = canvas.getContext('2d');
+                const renderContext = {
+                    canvasContext: context,
+                    viewport: viewport
+                };
+                
+                await page.render(renderContext).promise;
+            } catch (error) {
+                console.error(`Error rendering PDF page ${pageNum}:`, error);
+            }
+        }
+
+        // Close modal when clicking outside of it
+        document.addEventListener('click', function(event) {
+            const projectModal = document.getElementById('projectModal');
+            const certificateModal = document.getElementById('certificateModal');
+            const pdfModal = document.getElementById('pdfModal');
+            
+            if (event.target === projectModal) {
+                closeProjectModal();
+            }
+            if (event.target === certificateModal) {
+                closeCertificateModal();
+            }
+            if (event.target === pdfModal) {
+                closePDFModal();
+            }
+        });
+
+        // Carousel Drag/Swipe Functionality
+        let dragStartX = 0;
+        let dragStartY = 0;
+        let isDragging = false;
+        let dragOffsetX = 0;
+
+        function initCarouselDrag() {
+            const carouselContainer = document.getElementById('carouselContainer');
+            if (!carouselContainer) return;
+
+            carouselContainer.addEventListener('mousedown', startDrag);
+            carouselContainer.addEventListener('touchstart', startDrag);
+            document.addEventListener('mousemove', moveDrag);
+            document.addEventListener('touchmove', moveDrag);
+            document.addEventListener('mouseup', endDrag);
+            document.addEventListener('touchend', endDrag);
+        }
+
+        function startDrag(e) {
+            isDragging = true;
+            
+            if (e.type.includes('touch')) {
+                dragStartX = e.touches[0].clientX;
+                dragStartY = e.touches[0].clientY;
+            } else {
+                dragStartX = e.clientX;
+                dragStartY = e.clientY;
+            }
+            dragOffsetX = 0;
+
+            const carouselContainer = document.getElementById('carouselContainer');
+            const wrapper = document.getElementById('carouselWrapper');
+            
+            carouselContainer.classList.add('dragging');
+            wrapper.classList.add('no-transition');
+        }
+
+        function moveDrag(e) {
+            if (!isDragging) return;
+            e.preventDefault();
+
+            let currentX;
+            if (e.type.includes('touch')) {
+                currentX = e.touches[0].clientX;
+            } else {
+                currentX = e.clientX;
+            }
+            
+            dragOffsetX = currentX - dragStartX;
+
+            const wrapper = document.getElementById('carouselWrapper');
+            const offsetPercentage = (dragOffsetX / window.innerWidth) * 50;
+            wrapper.style.transform = `translateX(calc(-${window.currentSlide * 100}% + ${offsetPercentage}px))`;
+        }
+
+        function endDrag(e) {
+            if (!isDragging) return;
+            e.preventDefault();
+            isDragging = false;
+
+            const wrapper = document.getElementById('carouselWrapper');
+            const carouselContainer = document.getElementById('carouselContainer');
+            
+            wrapper.classList.remove('no-transition');
+            carouselContainer.classList.remove('dragging');
+
+            const threshold = 50;
+
+            if (dragOffsetX > threshold) {
+                previousSlide();
+            } else if (dragOffsetX < -threshold) {
+                nextSlide();
+            } else {
+                updateCarouselSlide();
+            }
+        }
+
+        // Initialize carousel drag on page load
+        setTimeout(() => {
+            initCarouselDrag();
+        }, 100);
+
+        // Function to render PDF thumbnails
+        async function renderPDFThumbnail(pdfPath, canvasId) {
+            try {
+                const canvas = document.getElementById(canvasId);
+                if (!canvas) return;
+
+                // Load PDF
+                const pdf = await pdfjsLib.getDocument(pdfPath).promise;
+                const page = await pdf.getPage(1);
+
+                // Set canvas dimensions
+                const scale = 2;
+                const viewport = page.getViewport({ scale });
+                canvas.width = viewport.width;
+                canvas.height = viewport.height;
+
+                // Render page to canvas
+                const context = canvas.getContext('2d');
+                const renderContext = {
+                    canvasContext: context,
+                    viewport: viewport
+                };
+                await page.render(renderContext).promise;
+            } catch (error) {
+                console.error(`Error rendering PDF ${pdfPath}:`, error);
+                // Fallback: show text on canvas
+                const canvas = document.getElementById(canvasId);
+                if (canvas) {
+                    const context = canvas.getContext('2d');
+                    canvas.width = 640;
+                    canvas.height = 360;
+                    context.fillStyle = '#e5e7eb';
+                    context.fillRect(0, 0, canvas.width, canvas.height);
+                    context.fillStyle = '#6b7280';
+                    context.font = '20px sans-serif';
+                    context.textAlign = 'center';
+                    context.fillText('PDF Preview', canvas.width / 2, canvas.height / 2 - 20);
+                    context.fillText('(Click to view full document)', canvas.width / 2, canvas.height / 2 + 20);
+                }
+            }
+        }
+
+        // Render all PDF thumbnails on page load
+        window.addEventListener('load', () => {
+            renderPDFThumbnail('vix-completion-certificate-44667IAPMGII372022.pdf', 'pdfCanvas1');
+            renderPDFThumbnail('Databases.pdf', 'pdfCanvas2');
+            renderPDFThumbnail('Excel 2019 Expert.pdf', 'pdfCanvas3');
+            renderPDFThumbnail('Data Analytics.pdf', 'pdfCanvas4');
+        });
+
+        feather.replace();
+
+        // Initialize ScrollReveal for various elements with comprehensive animations
+        const sr = ScrollReveal({
+            duration: 800,
+            easing: 'ease-out',
+            distance: '60px'
+        });
+
+        // Reveal headings from top
+        sr.reveal('h2', {
+            origin: 'top',
+            distance: '40px',
+            delay: 100,
+            interval: 200
+        });
+
+        // Reveal experience cards from bottom with stagger
+        sr.reveal('.experience-card', {
+            origin: 'bottom',
+            distance: '30px',
+            delay: 200,
+            interval: 150,
+            scale: 0.9
+        });
+
+        // Reveal project cards with rotate effect
+        sr.reveal('.project-card', {
+            origin: 'bottom',
+            distance: '40px',
+            delay: 200,
+            interval: 200,
+            scale: 0.85,
+            rotate: { x: 10, y: 0 }
+        });
+
+        // Reveal certificate cards with zoom effect
+        sr.reveal('.certificate-card', {
+            origin: 'left',
+            distance: '30px',
+            delay: 200,
+            interval: 150,
+            scale: 0.9
+        });
+
+        // Reveal about section images
+        sr.reveal('img', {
+            origin: 'right',
+            distance: '40px',
+            delay: 300,
+            scale: 0.95
+        });
+
+        // Reveal text paragraphs
+        sr.reveal('p', {
+            origin: 'bottom',
+            distance: '20px',
+            delay: 100,
+            interval: 50
+        });
+
+        // Reveal buttons and forms
+        sr.reveal('button, input, textarea', {
+            origin: 'bottom',
+            distance: '20px',
+            delay: 300,
+            interval: 100
+        });
+
+        // Add fade-in animation to skills tags
+        sr.reveal('.bg-green-100, .bg-green-200', {
+            origin: 'bottom',
+            distance: '15px',
+            delay: 150,
+            interval: 50
+        });
+</script>
+</body>
+</html>
